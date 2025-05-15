@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Navbar from '../components/Navbar'; // NAVBAR EKLENDİ
+import Banner from '../components/Banner'; // BANNER
+import Navbar from '../components/Navbar'; // NAVBAR
 
 type Book = {
   id: string
@@ -71,7 +72,8 @@ export default function BooksScreen() {
   return (
     <View style={styles.container}>
       <Navbar />
-      
+      <Banner />
+
       <View style={styles.scrollContainer}>
         <TouchableOpacity onPress={handlePrev} style={styles.arrow}>
           <Text style={styles.arrowText}>◀</Text>
