@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "title": "Best eCommerce Platforms",
+    "author": "Mark Thompson",
+    "coverImage": "https://picsum.photos/200/300",
+    "price": 39.99
+  },
+  {
+    "id": "2",
+    "title": "Modern UI Design",
+    "author": "Jane Smith",
+    "coverImage": "https://picsum.photos/200/301",
+    "price": 29.99
+  }
+]
