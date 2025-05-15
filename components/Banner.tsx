@@ -1,17 +1,27 @@
 import React from 'react'
-import { Image, StyleSheet, View } from 'react-native'
+import { Dimensions, FlatList, Image, StyleSheet, View } from 'react-native'
+
+const banners = [
+  require('../assets/images/banner.png'),
+  require('../assets/images/valentines-sale.png'),
+  require('../assets/images/winter-sale.png'),
+]
+
+const { width } = Dimensions.get('window')
 
 const Banner = () => {
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../assets/images/banner.png')} // banner.png buraya
-        style={styles.image}
-        resizeMode="cover"
+      <FlatList
+        data={banners}
+        keyExtractor={(_, index) => index.toString()}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <Image source={item} style={styles.image} resizeMode="cover" />
+        )}
       />
-      <View style={styles.textOverlay}>
-    
-      </View>
     </View>
   )
 }
@@ -20,30 +30,12 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: 200,
-    position: 'relative',
     marginBottom: 16,
-    borderRadius: 12,
-    overflow: 'hidden',
   },
   image: {
-    width: '100%',
-    height: '100%',
-  },
-  textOverlay: {
-    position: 'absolute',
-    top: 30,
-    left: 20,
-    right: 20,
-  },
-  title: {
-    fontSize: 20,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#eee',
-    marginTop: 8,
+    width: width,
+    height: 200,
+    borderRadius: 12,
   },
 })
 
