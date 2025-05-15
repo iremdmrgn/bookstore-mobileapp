@@ -1,9 +1,6 @@
-import { Text, View } from 'react-native'
+import BooksScreen from '../../screens/BooksScreen'
 
 export default function App() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24 }}>📚 Bookstore Mobile App</Text>
-    </View>
-  )
+  return <BooksScreen />
 }
+

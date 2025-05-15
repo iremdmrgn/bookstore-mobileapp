@@ -3,14 +3,140 @@
     "id": "1",
     "title": "Best eCommerce Platforms",
     "author": "Mark Thompson",
-    "coverImage": "https://picsum.photos/200/300",
+    "coverImage": "book-4.png",
     "price": 39.99
   },
   {
     "id": "2",
-    "title": "Modern UI Design",
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "coverImage": "book-11.png",
+    "price": 25.99
+  },
+  {
+    "id": "3",
+    "title": "The Picture of Dorian Gray",
+    "author": "Oscar Wilde",
+    "coverImage": "book-13.png",
+    "price": 21.99
+  },
+  {
+    "id": "4",
+    "title": "Gone with the Wind",
+    "author": "Margaret Mitchell",
+    "coverImage": "book-15.png",
+    "price": 12.99
+  },
+  {
+    "id": "5",
+    "title": "Divergent",
+    "author": "Veronica Roth",
+    "coverImage": "book-18.png",
+    "price": 12.99
+  },
+  {
+    "id": "6",
+    "title": "How to Grow Your Online Store",
     "author": "Jane Smith",
-    "coverImage": "https://picsum.photos/200/301",
+    "coverImage": "book-1.png",
+    "price": 19.99
+  },
+  {
+    "id": "7",
+    "title": "Non-Fiction Reads You Must Try",
+    "author": "Emily Carter",
+    "coverImage": "book-5.png",
+    "price": 9.99
+  },
+  {
+    "id": "8",
+    "title": "The Alchemist",
+    "author": "Paulo Coelho",
+    "coverImage": "book-19.png",
+    "price": 27.99
+  },
+  {
+    "id": "9",
+    "title": "The Hunger Games",
+    "author": "Suzanne Collins",
+    "coverImage": "book-8.png",
+    "price": 16.99
+  },
+  {
+    "id": "10",
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "coverImage": "book-10.png",
+    "price": 10.99
+  },
+  {
+    "id": "11",
+    "title": "The Fault in Our Stars",
+    "author": "John Green",
+    "coverImage": "book-12.png",
+    "price": 9.99
+  },
+  {
+    "id": "12",
+    "title": "The Lightning Thief",
+    "author": "Rick Riordan",
+    "coverImage": "book-16.png",
+    "price": 19.99
+  },
+  {
+    "id": "13",
+    "title": "Top 10 Fiction Books This Year",
+    "author": "Alex Johnson",
+    "coverImage": "book-2.png",
+    "price": 14.99
+  },
+  {
+    "id": "14",
+    "title": "Mastering SEO in 2024",
+    "author": "Brian Dean",
+    "coverImage": "book-3.png",
     "price": 29.99
+  },
+  {
+    "id": "15",
+    "title": "Ultimate Guide to Digital Marketing",
+    "author": "Seth Godin",
+    "coverImage": "book-6.png",
+    "price": 34.99
+  },
+  {
+    "id": "16",
+    "title": "The First Days",
+    "author": "Catherine Blackwood",
+    "coverImage": "book-7.png",
+    "price": 49.99
+  },
+  {
+    "id": "17",
+    "title": "Harry Potter and the Order of the Phoenix",
+    "author": "J.K Rowling",
+    "coverImage": "book-9.png",
+    "price": 16.99
+  },
+  {
+    "id": "18",
+    "title": "The Giving Tree",
+    "author": "Shel Silverstein",
+    "coverImage": "book-14.png",
+    "price": 24.99
+  },
+  {
+    "id": "19",
+    "title": "Alice’s Adventures in Wonderland",
+    "author": "Lewis Carroll",
+    "coverImage": "book-17.png",
+    "price": 39.99
+  },
+  {
+    "id": "20",
+    "title": "Four Thousand Weeks",
+    "author": "Oliver Burkeman",
+    "coverImage": "book-20.png",
+    "price": 14.99
   }
 ]
