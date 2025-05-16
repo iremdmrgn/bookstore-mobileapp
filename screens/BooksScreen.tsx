@@ -2,6 +2,7 @@ import { useNavigation } from 'expo-router';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,8 +22,12 @@ type Book = {
 
 export default function BooksScreen() {
   const [books, setBooks] = useState<Book[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const flatListRef = useRef<FlatList>(null);
+  const [currentTopIndex, setCurrentTopIndex] = useState(0);
+  const [currentRecommendIndex, setCurrentRecommendIndex] = useState(0);
+
+  const topListRef = useRef<FlatList>(null);
+  const recommendListRef = useRef<FlatList>(null);
+
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
@@ -37,33 +42,47 @@ export default function BooksScreen() {
     loadBooks();
   }, []);
 
-  const handleNext = () => {
-    const nextIndex = (currentIndex + 1) % Math.min(10, books.length);
-    flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
-    setCurrentIndex(nextIndex);
+  // --- Top Sellers ---
+  const handleTopNext = () => {
+    const nextIndex = (currentTopIndex + 1) % Math.min(10, books.length);
+    topListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+    setCurrentTopIndex(nextIndex);
   };
 
-  const handlePrev = () => {
-    const prevIndex = (currentIndex - 1 + Math.min(10, books.length)) % Math.min(10, books.length);
-    flatListRef.current?.scrollToIndex({ index: prevIndex, animated: true });
-    setCurrentIndex(prevIndex);
+  const handleTopPrev = () => {
+    const prevIndex = (currentTopIndex - 1 + Math.min(10, books.length)) % Math.min(10, books.length);
+    topListRef.current?.scrollToIndex({ index: prevIndex, animated: true });
+    setCurrentTopIndex(prevIndex);
+  };
+
+  // --- Recommend Books ---
+  const handleRecommendNext = () => {
+    const nextIndex = (currentRecommendIndex + 1) % Math.min(10, books.length - 10);
+    recommendListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+    setCurrentRecommendIndex(nextIndex);
+  };
+
+  const handleRecommendPrev = () => {
+    const prevIndex = (currentRecommendIndex - 1 + Math.min(10, books.length - 10)) % Math.min(10, books.length - 10);
+    recommendListRef.current?.scrollToIndex({ index: prevIndex, animated: true });
+    setCurrentRecommendIndex(prevIndex);
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Navbar />
       <Banner />
 
+      {/* Top Sellers */}
       <Text style={styles.title}>Top Sellers</Text>
-
       <View style={styles.scrollContainer}>
-        <TouchableOpacity onPress={handlePrev} style={styles.arrow}>
+        <TouchableOpacity onPress={handleTopPrev} style={styles.arrow}>
           <Text style={styles.arrowText}>◀</Text>
         </TouchableOpacity>
 
         <FlatList
-          ref={flatListRef}
-          data={books.slice(0, 10)} // 🔥 sadece ilk 10 kitap
+          ref={topListRef}
+          data={books.slice(0, 10)}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
@@ -71,11 +90,33 @@ export default function BooksScreen() {
           renderItem={({ item }) => <BookCard book={item} />}
         />
 
-        <TouchableOpacity onPress={handleNext} style={styles.arrow}>
+        <TouchableOpacity onPress={handleTopNext} style={styles.arrow}>
           <Text style={styles.arrowText}>▶</Text>
         </TouchableOpacity>
       </View>
-    </View>
+
+      {/* Recommend Books */}
+      <Text style={styles.title}>Recommend Books</Text>
+      <View style={styles.scrollContainer}>
+        <TouchableOpacity onPress={handleRecommendPrev} style={styles.arrow}>
+          <Text style={styles.arrowText}>◀</Text>
+        </TouchableOpacity>
+
+        <FlatList
+          ref={recommendListRef}
+          data={books.slice(10, 20)}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <BookCard book={item} />}
+        />
+
+        <TouchableOpacity onPress={handleRecommendNext} style={styles.arrow}>
+          <Text style={styles.arrowText}>▶</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -83,6 +124,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingBottom: 40, // 🔽 taşma varsa bu kurtarır
   },
   title: {
     fontSize: 22,
