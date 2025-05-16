@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import Banner from '../components/Banner';
-import BookCard from '../components/BookCard'; // ✅ yeni bileşeni içe aktardık
+import BookCard from '../components/BookCard';
 import Navbar from '../components/Navbar';
 
 type Book = {
@@ -38,13 +38,13 @@ export default function BooksScreen() {
   }, []);
 
   const handleNext = () => {
-    const nextIndex = (currentIndex + 1) % books.length;
+    const nextIndex = (currentIndex + 1) % Math.min(10, books.length);
     flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
     setCurrentIndex(nextIndex);
   };
 
   const handlePrev = () => {
-    const prevIndex = (currentIndex - 1 + books.length) % books.length;
+    const prevIndex = (currentIndex - 1 + Math.min(10, books.length)) % Math.min(10, books.length);
     flatListRef.current?.scrollToIndex({ index: prevIndex, animated: true });
     setCurrentIndex(prevIndex);
   };
@@ -54,6 +54,8 @@ export default function BooksScreen() {
       <Navbar />
       <Banner />
 
+      <Text style={styles.title}>Top Sellers</Text>
+
       <View style={styles.scrollContainer}>
         <TouchableOpacity onPress={handlePrev} style={styles.arrow}>
           <Text style={styles.arrowText}>◀</Text>
@@ -61,7 +63,7 @@ export default function BooksScreen() {
 
         <FlatList
           ref={flatListRef}
-          data={books}
+          data={books.slice(0, 10)} // 🔥 sadece ilk 10 kitap
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
@@ -81,6 +83,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '600',
+    marginLeft: 16,
+    marginTop: 20,
+    fontFamily: 'PlayfairDisplay-Regular',
   },
   scrollContainer: {
     flexDirection: 'row',
