@@ -1,3 +1,4 @@
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -40,8 +41,17 @@ const getImageSource = (fileName: string) => {
 export default function BookDetailScreen() {
   const { id } = useLocalSearchParams();
   const book = books.find((item) => item.id === id);
+
   const [activeTab, setActiveTab] = useState<'description' | 'details'>('description');
   const [isFavorite, setIsFavorite] = useState(false);
+
+  const handleAddToCart = () => {
+    Alert.alert('Added to Cart', `"${book?.title}" added to your cart.`);
+  };
+
+  const toggleFavorite = () => {
+    setIsFavorite((prev) => !prev);
+  };
 
   if (!book) {
     return (
@@ -53,35 +63,26 @@ export default function BookDetailScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={getImageSource(book.coverImage)} style={styles.image} />
+      <View style={styles.imageContainer}>
+        <Image source={getImageSource(book.coverImage)} style={styles.image} />
+        <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteBox}>
+          <FontAwesome
+            name={isFavorite ? 'heart' : 'heart-o'}
+            size={20}
+            color="red"
+          />
+        </TouchableOpacity>
+      </View>
+
       <Text style={styles.title}>{book.title}</Text>
       <Text style={styles.author}>by {book.author}</Text>
       <Text style={styles.price}>${book.price}</Text>
 
-      {/* Add to Cart Button */}
-      <TouchableOpacity
-        style={styles.cartButton}
-        onPress={() =>
-          Alert.alert('Added to Cart', `"${book.title}" added to your cart.`)
-        }
-      >
+      <TouchableOpacity style={styles.cartButton} onPress={handleAddToCart}>
+        <Feather name="shopping-cart" size={14} color="#000" />
         <Text style={styles.cartButtonText}>Add to Cart</Text>
       </TouchableOpacity>
 
-      {/* Favorite Toggle */}
-      <TouchableOpacity
-        onPress={() => setIsFavorite((prev) => !prev)}
-        style={[
-          styles.favoriteButton,
-          { borderColor: isFavorite ? 'red' : '#ccc' },
-        ]}
-      >
-        <Text style={{ color: isFavorite ? 'red' : '#444' }}>
-          {isFavorite ? '♥ Favorited' : '♡ Add to Favorites'}
-        </Text>
-      </TouchableOpacity>
-
-      {/* Tabs */}
       <View style={styles.tabRow}>
         <TouchableOpacity onPress={() => setActiveTab('description')}>
           <Text
@@ -98,7 +99,9 @@ export default function BookDetailScreen() {
       </View>
 
       {activeTab === 'description' && (
-        <Text style={styles.description}>{book.description || 'No description available.'}</Text>
+        <Text style={styles.description}>
+          {book.description || 'No description available.'}
+        </Text>
       )}
 
       {activeTab === 'details' && (
@@ -121,11 +124,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
+  imageContainer: {
+    position: 'relative',
+  },
   image: {
-    width: 200,
+    width: 250,
     height: 300,
     borderRadius: 12,
     marginBottom: 20,
+  },
+favoriteBox: {
+  position: 'absolute',
+  top: 0,
+  right: -50,
+  backgroundColor: '#FFA726', // turuncu iç renk
+  borderRadius: 8,
+  padding: 6,
+  borderWidth: 4,
+  borderColor: '#FFA726', // dış kenar da turuncu
+
+
+    
   },
   title: {
     fontSize: 24,
@@ -143,22 +162,19 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   cartButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#F9A825',
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 20,
-    borderRadius: 8,
-    marginTop: 8,
+    borderRadius: 6,
+    marginBottom: 16,
   },
   cartButtonText: {
+    fontSize: 14,
     color: '#000',
     fontWeight: '600',
-  },
-  favoriteButton: {
-    marginTop: 12,
-    padding: 8,
-    borderRadius: 50,
-    backgroundColor: '#fff',
-    borderWidth: 1,
+    marginLeft: 6,
   },
   description: {
     fontSize: 16,
