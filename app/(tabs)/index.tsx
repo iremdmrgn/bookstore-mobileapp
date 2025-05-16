@@ -1,9 +1,12 @@
+import { StatusBar } from 'expo-status-bar';
+import { View } from 'react-native';
 import BooksScreen from '../../screens/BooksScreen';
 
-export const options = {
-  headerShown: false, // ✅ çizgiyi ve tüm header'ı kapatır
-};
-
-export default function App() {
-  return <BooksScreen />;
+export default function Index() {
+  return (
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      <StatusBar style="dark" translucent backgroundColor="transparent" />
+      <BooksScreen />
+    </View>
+  );
 }

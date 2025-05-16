@@ -8,9 +8,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context'; // ✅ iPhone çentik boşluğu için
 import Banner from '../components/Banner';
 import BookCard from '../components/BookCard';
+import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import News from '../components/News';
 
 type Book = {
   id: string;
@@ -27,8 +30,8 @@ export default function BooksScreen() {
 
   const topListRef = useRef<FlatList>(null);
   const recommendListRef = useRef<FlatList>(null);
-
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets(); // ✅ çentik yüksekliğini al
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: '' });
@@ -42,7 +45,6 @@ export default function BooksScreen() {
     loadBooks();
   }, []);
 
-  // --- Top Sellers ---
   const handleTopNext = () => {
     const nextIndex = (currentTopIndex + 1) % Math.min(10, books.length);
     topListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
@@ -50,73 +52,87 @@ export default function BooksScreen() {
   };
 
   const handleTopPrev = () => {
-    const prevIndex = (currentTopIndex - 1 + Math.min(10, books.length)) % Math.min(10, books.length);
+    const prevIndex =
+      (currentTopIndex - 1 + Math.min(10, books.length)) % Math.min(10, books.length);
     topListRef.current?.scrollToIndex({ index: prevIndex, animated: true });
     setCurrentTopIndex(prevIndex);
   };
 
-  // --- Recommend Books ---
   const handleRecommendNext = () => {
-    const nextIndex = (currentRecommendIndex + 1) % Math.min(10, books.length - 10);
+    const nextIndex =
+      (currentRecommendIndex + 1) % Math.min(10, books.length - 10);
     recommendListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
     setCurrentRecommendIndex(nextIndex);
   };
 
   const handleRecommendPrev = () => {
-    const prevIndex = (currentRecommendIndex - 1 + Math.min(10, books.length - 10)) % Math.min(10, books.length - 10);
+    const prevIndex =
+      (currentRecommendIndex - 1 + Math.min(10, books.length - 10)) %
+      Math.min(10, books.length - 10);
     recommendListRef.current?.scrollToIndex({ index: prevIndex, animated: true });
     setCurrentRecommendIndex(prevIndex);
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Navbar />
-      <Banner />
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#fff',
+        paddingTop: insets.top, // ✅ iPhone çentiği kadar boşluk bırak
+      }}
+    >
+      <ScrollView style={styles.container}>
+        <Navbar />
+        <Banner />
 
-      {/* Top Sellers */}
-      <Text style={styles.title}>Top Sellers</Text>
-      <View style={styles.scrollContainer}>
-        <TouchableOpacity onPress={handleTopPrev} style={styles.arrow}>
-          <Text style={styles.arrowText}>◀</Text>
-        </TouchableOpacity>
+        {/* Top Sellers */}
+        <Text style={styles.title}>Top Sellers</Text>
+        <View style={styles.scrollContainer}>
+          <TouchableOpacity onPress={handleTopPrev} style={styles.arrow}>
+            <Text style={styles.arrowText}>◀</Text>
+          </TouchableOpacity>
 
-        <FlatList
-          ref={topListRef}
-          data={books.slice(0, 10)}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <BookCard book={item} />}
-        />
+          <FlatList
+            ref={topListRef}
+            data={books.slice(0, 10)}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <BookCard book={item} />}
+          />
 
-        <TouchableOpacity onPress={handleTopNext} style={styles.arrow}>
-          <Text style={styles.arrowText}>▶</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity onPress={handleTopNext} style={styles.arrow}>
+            <Text style={styles.arrowText}>▶</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Recommend Books */}
-      <Text style={styles.title}>Recommend Books</Text>
-      <View style={styles.scrollContainer}>
-        <TouchableOpacity onPress={handleRecommendPrev} style={styles.arrow}>
-          <Text style={styles.arrowText}>◀</Text>
-        </TouchableOpacity>
+        {/* Recommend Books */}
+        <Text style={styles.title}>Recommend Books</Text>
+        <View style={styles.scrollContainer}>
+          <TouchableOpacity onPress={handleRecommendPrev} style={styles.arrow}>
+            <Text style={styles.arrowText}>◀</Text>
+          </TouchableOpacity>
 
-        <FlatList
-          ref={recommendListRef}
-          data={books.slice(10, 20)}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <BookCard book={item} />}
-        />
+          <FlatList
+            ref={recommendListRef}
+            data={books.slice(10, 20)}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <BookCard book={item} />}
+          />
 
-        <TouchableOpacity onPress={handleRecommendNext} style={styles.arrow}>
-          <Text style={styles.arrowText}>▶</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          <TouchableOpacity onPress={handleRecommendNext} style={styles.arrow}>
+            <Text style={styles.arrowText}>▶</Text>
+          </TouchableOpacity>
+        </View>
+
+        <News />
+        <Footer />
+      </ScrollView>
+    </View>
   );
 }
 
@@ -124,7 +140,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingBottom: 40, // 🔽 taşma varsa bu kurtarır
+    paddingBottom: 40,
   },
   title: {
     fontSize: 22,
