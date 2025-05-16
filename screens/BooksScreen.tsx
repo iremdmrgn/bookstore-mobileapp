@@ -1,4 +1,4 @@
-import { useNavigation } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   FlatList,
@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context'; // ✅ iPhone çentik boşluğu için
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import Banner from '../components/Banner';
 import BookCard from '../components/BookCard';
 import Footer from '../components/Footer';
@@ -30,8 +31,10 @@ export default function BooksScreen() {
 
   const topListRef = useRef<FlatList>(null);
   const recommendListRef = useRef<FlatList>(null);
+
+  const router = useRouter();
   const navigation = useNavigation();
-  const insets = useSafeAreaInsets(); // ✅ çentik yüksekliğini al
+  const insets = useSafeAreaInsets();
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: '' });
@@ -78,7 +81,7 @@ export default function BooksScreen() {
       style={{
         flex: 1,
         backgroundColor: '#fff',
-        paddingTop: insets.top, // ✅ iPhone çentiği kadar boşluk bırak
+        paddingTop: insets.top,
       }}
     >
       <ScrollView style={styles.container}>
@@ -99,7 +102,14 @@ export default function BooksScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <BookCard book={item} />}
+            renderItem={({ item }) => (
+              <BookCard
+                book={item}
+                onPress={() =>
+                  router.push({ pathname: '/book/[id]', params: { id: item.id } })
+                }
+              />
+            )}
           />
 
           <TouchableOpacity onPress={handleTopNext} style={styles.arrow}>
@@ -121,7 +131,14 @@ export default function BooksScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <BookCard book={item} />}
+            renderItem={({ item }) => (
+              <BookCard
+                book={item}
+                onPress={() =>
+                  router.push({ pathname: '/book/[id]', params: { id: item.id } })
+                }
+              />
+            )}
           />
 
           <TouchableOpacity onPress={handleRecommendNext} style={styles.arrow}>

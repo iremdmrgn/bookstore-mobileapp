@@ -1,10 +1,47 @@
 import { useLocalSearchParams } from 'expo-router';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import books from '../../assets/books.json'; // ✅ kitapları JSON'dan al
+import { useState } from 'react';
+import {
+    Alert,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
+import books from '../../assets/books.json';
+
+const getImageSource = (fileName: string) => {
+  const images: Record<string, any> = {
+    'book-1.png': require('../../assets/images/book-1.png'),
+    'book-2.png': require('../../assets/images/book-2.png'),
+    'book-3.png': require('../../assets/images/book-3.png'),
+    'book-4.png': require('../../assets/images/book-4.png'),
+    'book-5.png': require('../../assets/images/book-5.png'),
+    'book-6.png': require('../../assets/images/book-6.png'),
+    'book-7.png': require('../../assets/images/book-7.png'),
+    'book-8.png': require('../../assets/images/book-8.png'),
+    'book-9.png': require('../../assets/images/book-9.png'),
+    'book-10.png': require('../../assets/images/book-10.png'),
+    'book-11.png': require('../../assets/images/book-11.png'),
+    'book-12.png': require('../../assets/images/book-12.png'),
+    'book-13.png': require('../../assets/images/book-13.png'),
+    'book-14.png': require('../../assets/images/book-14.png'),
+    'book-15.png': require('../../assets/images/book-15.png'),
+    'book-16.png': require('../../assets/images/book-16.png'),
+    'book-17.png': require('../../assets/images/book-17.png'),
+    'book-18.png': require('../../assets/images/book-18.png'),
+    'book-19.png': require('../../assets/images/book-19.png'),
+    'book-20.png': require('../../assets/images/book-20.png'),
+  };
+  return images[fileName] || images['book-1.png'];
+};
 
 export default function BookDetailScreen() {
   const { id } = useLocalSearchParams();
   const book = books.find((item) => item.id === id);
+  const [activeTab, setActiveTab] = useState<'description' | 'details'>('description');
+  const [isFavorite, setIsFavorite] = useState(false);
 
   if (!book) {
     return (
@@ -16,14 +53,64 @@ export default function BookDetailScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={{ uri: book.coverImage }} style={styles.image} />
+      <Image source={getImageSource(book.coverImage)} style={styles.image} />
       <Text style={styles.title}>{book.title}</Text>
       <Text style={styles.author}>by {book.author}</Text>
       <Text style={styles.price}>${book.price}</Text>
-      <Text style={styles.description}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi.
-        Morbi nec leo eu purus facilisis porttitor nec ut urna.
-      </Text>
+
+      {/* Add to Cart Button */}
+      <TouchableOpacity
+        style={styles.cartButton}
+        onPress={() =>
+          Alert.alert('Added to Cart', `"${book.title}" added to your cart.`)
+        }
+      >
+        <Text style={styles.cartButtonText}>Add to Cart</Text>
+      </TouchableOpacity>
+
+      {/* Favorite Toggle */}
+      <TouchableOpacity
+        onPress={() => setIsFavorite((prev) => !prev)}
+        style={[
+          styles.favoriteButton,
+          { borderColor: isFavorite ? 'red' : '#ccc' },
+        ]}
+      >
+        <Text style={{ color: isFavorite ? 'red' : '#444' }}>
+          {isFavorite ? '♥ Favorited' : '♡ Add to Favorites'}
+        </Text>
+      </TouchableOpacity>
+
+      {/* Tabs */}
+      <View style={styles.tabRow}>
+        <TouchableOpacity onPress={() => setActiveTab('description')}>
+          <Text
+            style={[styles.tabText, activeTab === 'description' && styles.activeTab]}
+          >
+            Description
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setActiveTab('details')}>
+          <Text style={[styles.tabText, activeTab === 'details' && styles.activeTab]}>
+            Details
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {activeTab === 'description' && (
+        <Text style={styles.description}>{book.description || 'No description available.'}</Text>
+      )}
+
+      {activeTab === 'details' && (
+        <View style={styles.detailList}>
+          <Text>📖 Paper Type: {book.paperType || 'Standard'}</Text>
+          <Text>📄 Page Count: {book.pageCount || 'N/A'}</Text>
+          <Text>📐 Dimensions: {book.dimensions || 'N/A'}</Text>
+          <Text>🗓 Edition Year: {book.editionYear || 'N/A'}</Text>
+          <Text>🔢 Edition Number: {book.editionNumber || 'N/A'}</Text>
+          <Text>🗣 Language: {book.language || 'English'}</Text>
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -55,10 +142,29 @@ const styles = StyleSheet.create({
     color: 'green',
     marginBottom: 16,
   },
+  cartButton: {
+    backgroundColor: '#F9A825',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  cartButtonText: {
+    color: '#000',
+    fontWeight: '600',
+  },
+  favoriteButton: {
+    marginTop: 12,
+    padding: 8,
+    borderRadius: 50,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+  },
   description: {
     fontSize: 16,
     textAlign: 'center',
     color: '#444',
+    marginTop: 12,
   },
   center: {
     flex: 1,
@@ -68,5 +174,24 @@ const styles = StyleSheet.create({
   notFound: {
     fontSize: 18,
     color: 'red',
+  },
+  tabRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 16,
+    gap: 20,
+  },
+  tabText: {
+    fontSize: 16,
+    color: '#666',
+  },
+  activeTab: {
+    color: '#007AFF',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
+  detailList: {
+    gap: 6,
+    marginTop: 8,
   },
 });
