@@ -65,7 +65,7 @@ export default function BookCard({ book, onPress }: Props) {
   };
 
   const handleAddToCart = () => {
-    addToCart(book); // ✅ Alert kaldırıldı
+    addToCart(book); 
     console.log('Sepete eklendi:', book);
   };
 

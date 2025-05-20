@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 
-// Ana kitap tipi
+
 type Book = {
   id: string;
   title: string;
@@ -9,10 +9,10 @@ type Book = {
   price: number;
 };
 
-// Sepet içindeki kitap tipi (quantity içerir)
+
 type CartBook = Book & { quantity: number };
 
-// Context tipi tanımı
+
 type CartContextType = {
   cartItems: CartBook[];
   addToCart: (book: Book) => void;
@@ -22,14 +22,14 @@ type CartContextType = {
   clearCart: () => void;
 };
 
-// Context oluştur
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// Provider bileşeni
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartBook[]>([]);
 
-  // Sepete ekle
+  
   const addToCart = (book: Book) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.id === book.id);
@@ -42,12 +42,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  // Sepetten çıkar
+  
   const removeFromCart = (id: string) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // Miktarı artır
+  
   const increaseQty = (id: string) => {
     setCartItems((prev) =>
       prev.map((item) =>
@@ -56,7 +56,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  // Miktarı azalt
+ 
   const decreaseQty = (id: string) => {
     setCartItems((prev) =>
       prev.map((item) =>
@@ -67,7 +67,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  // Tüm sepeti temizle
+  
   const clearCart = () => {
     setCartItems([]);
   };

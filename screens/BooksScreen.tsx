@@ -88,7 +88,6 @@ export default function BooksScreen() {
         <Navbar />
         <Banner />
 
-        {/* Top Sellers */}
         <Text style={styles.title}>Top Sellers</Text>
         <View style={styles.scrollContainer}>
           <TouchableOpacity onPress={handleTopPrev} style={styles.arrow}>
@@ -117,7 +116,7 @@ export default function BooksScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Recommend Books */}
+       
         <Text style={styles.title}>Recommend Books</Text>
         <View style={styles.scrollContainer}>
           <TouchableOpacity onPress={handleRecommendPrev} style={styles.arrow}>
