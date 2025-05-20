@@ -17,6 +17,8 @@ import {
   View,
 } from 'react-native';
 import books from '../assets/books.json';
+import { useCart } from '../context/CartContext';
+import { useFavorites } from '../context/FavoriteContext';
 
 const getImageSource = (fileName: string) => {
   const images: Record<string, any> = {
@@ -47,6 +49,8 @@ const getImageSource = (fileName: string) => {
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
+  const { cartItems } = useCart();
+  const { favorites } = useFavorites();
 
   const filteredBooks = books.filter((book) =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -60,7 +64,7 @@ export default function Navbar() {
         <Text style={styles.title}>Leaf & Chapter</Text>
       </View>
 
-      {/* ALT: Search input + iconlar */}
+      {/* ALT: Arama ve ikonlar */}
       <View style={styles.bottomRow}>
         <View style={styles.searchBox}>
           <TextInput
@@ -73,14 +77,27 @@ export default function Navbar() {
         </View>
 
         <View style={styles.icons}>
-          <TouchableOpacity onPress={() => router.push('/favorites')}>
+          {/* FAVORITES */}
+          <TouchableOpacity onPress={() => router.push('/favorites')} style={styles.iconWrapper}>
             <AntDesign name="hearto" size={22} color="#000" />
+            {favorites.length > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{favorites.length}</Text>
+              </View>
+            )}
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push('/cart')}> {/* 🛒 yönlendirme */}
+          {/* CART */}
+          <TouchableOpacity onPress={() => router.push('/cart')} style={styles.iconWrapper}>
             <Ionicons name="cart-outline" size={22} color="#000" />
+            {cartItems.length > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{cartItems.length}</Text>
+              </View>
+            )}
           </TouchableOpacity>
 
+          {/* USER */}
           <TouchableOpacity>
             <FontAwesome name="user-o" size={22} color="#000" />
           </TouchableOpacity>
@@ -159,6 +176,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
+  },
+  iconWrapper: {
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -10,
+    backgroundColor: '#e53935',
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    minWidth: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   searchResults: {
     maxHeight: 300,
