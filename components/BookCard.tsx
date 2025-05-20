@@ -1,13 +1,13 @@
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import React from 'react';
 import {
-  Alert,
   Image,
   StyleSheet,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
-import { useFavorites } from '../context/FavoriteContext'; // 🔥 Context import
+import { useCart } from '../context/CartContext';
+import { useFavorites } from '../context/FavoriteContext';
 
 type Book = {
   id: string;
@@ -49,12 +49,10 @@ const getImageSource = (fileName: string) => {
 };
 
 export default function BookCard({ book, onPress }: Props) {
-  const { favorites, addFavorite, removeFavorite } = useFavorites(); // ✅
-  const isFavorite = favorites.some((item) => item.id === book.id);  // ✅
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
+  const { addToCart } = useCart();
 
-  const handleAddToCart = () => {
-    Alert.alert('Added to Cart', `"${book.title}" added to your cart.`);
-  };
+  const isFavorite = favorites.some((item) => item.id === book.id);
 
   const handleToggleFavorite = () => {
     if (isFavorite) {
@@ -64,6 +62,11 @@ export default function BookCard({ book, onPress }: Props) {
       addFavorite(book);
       console.log('Favoriye eklendi:', book);
     }
+  };
+
+  const handleAddToCart = () => {
+    addToCart(book); // ✅ Alert kaldırıldı
+    console.log('Sepete eklendi:', book);
   };
 
   return (

@@ -73,15 +73,14 @@ export default function Navbar() {
         </View>
 
         <View style={styles.icons}>
-<TouchableOpacity onPress={() => router.push('/favorites')
-}>
-  <AntDesign name="hearto" size={22} color="#000" />
-</TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/favorites')}>
+            <AntDesign name="hearto" size={22} color="#000" />
+          </TouchableOpacity>
 
-
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/cart')}> {/* 🛒 yönlendirme */}
             <Ionicons name="cart-outline" size={22} color="#000" />
           </TouchableOpacity>
+
           <TouchableOpacity>
             <FontAwesome name="user-o" size={22} color="#000" />
           </TouchableOpacity>

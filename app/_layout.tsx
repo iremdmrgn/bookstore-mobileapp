@@ -5,7 +5,8 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { FavoriteProvider } from '../context/FavoriteContext'; // ✅ FAVORITE CONTEXT EKLENDİ
+import { CartProvider } from '../context/CartContext'; // 🛒 Sepet context eklendi
+import { FavoriteProvider } from '../context/FavoriteContext';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -21,12 +22,14 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <FavoriteProvider> 
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="dark" translucent backgroundColor="transparent" />
+      <FavoriteProvider>
+        <CartProvider> {/* 🛒 Burada sepeti sarmaladık */}
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="dark" translucent backgroundColor="transparent" />
+        </CartProvider>
       </FavoriteProvider>
     </ThemeProvider>
   );
