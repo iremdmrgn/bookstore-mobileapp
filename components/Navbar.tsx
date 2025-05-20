@@ -8,8 +8,8 @@ import {
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  FlatList,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -87,20 +87,23 @@ export default function Navbar() {
 
       {/* Arama Sonuçları */}
       {searchQuery !== '' && (
-        <FlatList
-          data={filteredBooks}
-          keyExtractor={(item) => item.id}
-          style={styles.searchResults}
-          renderItem={({ item }) => (
+        <ScrollView style={styles.searchResults}>
+          {filteredBooks.map((item) => (
             <TouchableOpacity
+              key={item.id}
               style={styles.resultItem}
-              onPress={() => router.push({ pathname: '/book/[id]', params: { id: item.id } })}
+              onPress={() =>
+                router.push({ pathname: '/book/[id]', params: { id: item.id } })
+              }
             >
-              <Image source={getImageSource(item.coverImage)} style={styles.resultImage} />
+              <Image
+                source={getImageSource(item.coverImage)}
+                style={styles.resultImage}
+              />
               <Text style={styles.resultText}>{item.title}</Text>
             </TouchableOpacity>
-          )}
-        />
+          ))}
+        </ScrollView>
       )}
     </View>
   );
