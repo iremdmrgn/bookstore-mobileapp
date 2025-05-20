@@ -1,5 +1,5 @@
 import { Feather, FontAwesome } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Alert,
   Image,
@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
+import { useFavorites } from '../context/FavoriteContext'; // 🔥 Context import
 
 type Book = {
   id: string;
@@ -48,19 +49,25 @@ const getImageSource = (fileName: string) => {
 };
 
 export default function BookCard({ book, onPress }: Props) {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { favorites, addFavorite, removeFavorite } = useFavorites(); // ✅
+  const isFavorite = favorites.some((item) => item.id === book.id);  // ✅
 
   const handleAddToCart = () => {
     Alert.alert('Added to Cart', `"${book.title}" added to your cart.`);
   };
 
   const handleToggleFavorite = () => {
-    setIsFavorite((prev) => !prev);
+    if (isFavorite) {
+      removeFavorite(book.id);
+      console.log('Favoriden çıkarıldı:', book);
+    } else {
+      addFavorite(book);
+      console.log('Favoriye eklendi:', book);
+    }
   };
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
-      {/* Favori kalp ikonu */}
       <TouchableOpacity onPress={handleToggleFavorite} style={styles.heartIcon}>
         <FontAwesome
           name={isFavorite ? 'heart' : 'heart-o'}
@@ -69,10 +76,8 @@ export default function BookCard({ book, onPress }: Props) {
         />
       </TouchableOpacity>
 
-      {/* Kitap görseli */}
       <Image source={getImageSource(book.coverImage)} style={styles.image} />
 
-      {/* Kitap bilgileri */}
       <Text style={styles.name} numberOfLines={1}>
         {book.title}
       </Text>
@@ -81,7 +86,6 @@ export default function BookCard({ book, onPress }: Props) {
       </Text>
       <Text style={styles.price}>${book.price}</Text>
 
-      {/* Sepete ekle butonu */}
       <TouchableOpacity style={styles.cartButton} onPress={handleAddToCart}>
         <Feather name="shopping-cart" size={14} color="#000" />
         <Text style={styles.cartButtonText}>Add to Cart</Text>
