@@ -58,13 +58,13 @@ export default function Navbar() {
 
   return (
     <View style={styles.wrapper}>
-      {/* ÜST: Logo ve Başlık */}
+      {/* Logo & Brand */}
       <View style={styles.brandContainer}>
         <MaterialCommunityIcons name="book-open-page-variant" size={28} color="#000" />
         <Text style={styles.title}>Leaf & Chapter</Text>
       </View>
 
-      {/* ALT: Arama ve ikonlar */}
+      {/* Search and Icons */}
       <View style={styles.bottomRow}>
         <View style={styles.searchBox}>
           <TextInput
@@ -77,7 +77,6 @@ export default function Navbar() {
         </View>
 
         <View style={styles.icons}>
-          {/* FAVORITES */}
           <TouchableOpacity onPress={() => router.push('/favorites')} style={styles.iconWrapper}>
             <AntDesign name="hearto" size={22} color="#000" />
             {favorites.length > 0 && (
@@ -87,7 +86,6 @@ export default function Navbar() {
             )}
           </TouchableOpacity>
 
-          {/* CART */}
           <TouchableOpacity onPress={() => router.push('/cart')} style={styles.iconWrapper}>
             <Ionicons name="cart-outline" size={22} color="#000" />
             {cartItems.length > 0 && (
@@ -97,14 +95,12 @@ export default function Navbar() {
             )}
           </TouchableOpacity>
 
-          {/* USER */}
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/profile')}>
             <FontAwesome name="user-o" size={22} color="#000" />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Arama Sonuçları */}
       {searchQuery !== '' && (
         <ScrollView style={styles.searchResults}>
           {filteredBooks.map((item) => (
