@@ -42,17 +42,18 @@ export default function RootLayout() {
       <FavoriteProvider>
         <CartProvider>
           <ProfileProvider>
-            <Stack>
-              {user ? (
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              ) : (
-                <>
-                  <Stack.Screen name="login" options={{ headerShown: false }} />
-                  <Stack.Screen name="register" options={{ headerShown: false }} />
-                </>
-              )}
-              <Stack.Screen name="+not-found" />
-            </Stack>
+            <Stack screenOptions={{ headerShown: false }}>
+  {user ? (
+    <Stack.Screen name="(tabs)" />
+  ) : (
+    <>
+      <Stack.Screen name="(auth)/login" />
+      <Stack.Screen name="(auth)/register" />
+    </>
+  )}
+  <Stack.Screen name="+not-found" />
+</Stack>
+
             <StatusBar style="dark" translucent backgroundColor="transparent" />
           </ProfileProvider>
         </CartProvider>
