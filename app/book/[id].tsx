@@ -2,15 +2,17 @@ import { Feather, FontAwesome } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import {
-    Alert,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import books from '../../assets/books.json';
+
+import { useCart } from '../../context/CartContext';
+import { useFavorites } from '../../context/FavoriteContext';
 
 const getImageSource = (fileName: string) => {
   const images: Record<string, any> = {
@@ -43,14 +45,26 @@ export default function BookDetailScreen() {
   const book = books.find((item) => item.id === id);
 
   const [activeTab, setActiveTab] = useState<'description' | 'details'>('description');
-  const [isFavorite, setIsFavorite] = useState(false);
+
+  const { addToCart } = useCart();
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
+
+  const isFavorite = favorites.some((item) => item.id === book?.id);
 
   const handleAddToCart = () => {
-    Alert.alert('Added to Cart', `"${book?.title}" added to your cart.`);
+    if (book) {
+      addToCart(book);
+      
+    }
   };
 
   const toggleFavorite = () => {
-    setIsFavorite((prev) => !prev);
+    if (!book) return;
+    if (isFavorite) {
+      removeFavorite(book.id);
+    } else {
+      addFavorite(book);
+    }
   };
 
   if (!book) {
@@ -133,18 +147,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 20,
   },
-favoriteBox: {
-  position: 'absolute',
-  top: 0,
-  right: -50,
-  backgroundColor: '#FFA726', // turuncu iç renk
-  borderRadius: 8,
-  padding: 6,
-  borderWidth: 4,
-  borderColor: '#FFA726', // dış kenar da turuncu
-
-
-    
+  favoriteBox: {
+    position: 'absolute',
+    top: 0,
+    right: -50,
+    backgroundColor: '#FFA726',
+    borderRadius: 8,
+    padding: 6,
+    borderWidth: 4,
+    borderColor: '#FFA726',
   },
   title: {
     fontSize: 24,
