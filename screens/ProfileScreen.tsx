@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -11,17 +11,20 @@ import {
   View
 } from 'react-native';
 
+import { useRouter } from 'expo-router';
+import { getAuth, signOut, User } from 'firebase/auth';
+
 const ProfileScreen = () => {
-  const [firstName, setFirstName] = useState('Jane');
-  const [lastName, setLastName] = useState('Doe');
-  const [email, setEmail] = useState('jane.doe@example.com');
-  const [phone, setPhone] = useState('+90 555 123 4567');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [selectedTab, setSelectedTab] = useState('userInfo');
 
   // Dummy state for orders, addresses, payments
-  const [orders, setOrders] = useState([]);
-  const [addresses, setAddresses] = useState([]);
-  const [payments, setPayments] = useState([]);
+  const [orders, setOrders] = useState<string[]>([]);
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
 
   // New Address State
   const [newAddress, setNewAddress] = useState({
@@ -40,8 +43,31 @@ const ProfileScreen = () => {
     holder: '',
   });
 
+  const router = useRouter();
+  const auth = getAuth();
+
+  // Firebase'den kullanıcı bilgilerini çek ve state'leri güncelle
+  useEffect(() => {
+    const user: User | null = auth.currentUser;
+    if (user) {
+      const displayName = user.displayName || '';
+      const email = user.email || '';
+      const phoneNumber = user.phoneNumber || '';
+
+      setEmail(email);
+      setPhone(phoneNumber);
+
+      if (displayName) {
+        const nameParts = displayName.split(' ');
+        setFirstName(nameParts[0] || '');
+        setLastName(nameParts.slice(1).join(' ') || '');
+      }
+    }
+  }, []);
+
   const handleUpdate = () => {
     Alert.alert('Profile Updated', 'Your information has been saved successfully.');
+    // Burada Firebase update fonksiyonları ekleyebilirsin (updateProfile veya Firestore güncelleme)
   };
 
   const handleAddAddress = () => {
@@ -62,6 +88,15 @@ const ProfileScreen = () => {
     setPayments([...payments, newPayment]);
     setNewPayment({ cardNumber: '', expiry: '', cvv: '', holder: '' });
     Alert.alert('Payment Added', 'New payment method saved.');
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    router.replace('/(auth)/login');  // logout sonrası login sayfasına yönlendir
+    } catch (error: any) {
+      Alert.alert('Logout Error', error.message || 'Failed to logout.');
+    }
   };
 
   const renderTabContent = () => {
@@ -97,6 +132,7 @@ const ProfileScreen = () => {
                       ? 'phone-pad'
                       : 'default'
                   }
+                  autoCapitalize={label.includes('Name') ? 'words' : 'none'}
                 />
               </View>
             ))}
@@ -129,7 +165,9 @@ const ProfileScreen = () => {
             {addresses.map((addr, index) => (
               <View key={index} style={styles.card}>
                 <Text style={styles.cardText}>{addr.title}</Text>
-                <Text style={styles.cardText}>{addr.street}, {addr.city}</Text>
+                <Text style={styles.cardText}>
+                  {addr.street}, {addr.city}
+                </Text>
               </View>
             ))}
             {['title', 'street', 'city', 'postalCode', 'country'].map((field, idx) => (
@@ -137,7 +175,7 @@ const ProfileScreen = () => {
                 key={idx}
                 placeholder={field}
                 style={styles.input}
-                value={newAddress[field]}
+                value={newAddress[field as keyof typeof newAddress]}
                 onChangeText={(text) =>
                   setNewAddress({ ...newAddress, [field]: text })
                 }
@@ -164,7 +202,7 @@ const ProfileScreen = () => {
                 key={idx}
                 placeholder={field}
                 style={styles.input}
-                value={newPayment[field]}
+                value={newPayment[field as keyof typeof newPayment]}
                 onChangeText={(text) =>
                   setNewPayment({ ...newPayment, [field]: text })
                 }
@@ -186,29 +224,39 @@ const ProfileScreen = () => {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Text style={styles.title}>My Profile</Text>
-        <View style={styles.tabContainer}>
-          {[
-            { key: 'userInfo', label: 'User Info' },
-            { key: 'orders', label: 'Orders' },
-            { key: 'addresses', label: 'Addresses' },
-            { key: 'payment', label: 'Payment' },
-          ].map((tab) => (
-            <TouchableOpacity
-              key={tab.key}
-              style={[styles.tab, selectedTab === tab.key && styles.activeTab]}
-              onPress={() => setSelectedTab(tab.key)}
-            >
-              <Text style={styles.tabText}>{tab.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        {renderTabContent()}
-      </ScrollView>
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Text style={styles.title}>My Profile</Text>
+          <View style={styles.tabContainer}>
+            {[
+              { key: 'userInfo', label: 'User Info' },
+              { key: 'orders', label: 'Orders' },
+              { key: 'addresses', label: 'Addresses' },
+              { key: 'payment', label: 'Payment' },
+            ].map((tab) => (
+              <TouchableOpacity
+                key={tab.key}
+                style={[styles.tab, selectedTab === tab.key && styles.activeTab]}
+                onPress={() => setSelectedTab(tab.key)}
+              >
+                <Text style={styles.tabText}>{tab.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          {renderTabContent()}
+        </ScrollView>
+
+        {/* Sabit logout butonu */}
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: '#d32f2f', margin: 20 }]}
+          onPress={handleLogout}
+        >
+          <Text style={[styles.buttonText, { color: '#fff' }]}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -235,7 +283,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   activeTab: {
-    backgroundColor: '#F9A825',
+    backgroundColor: '#FBC02D',
   },
   tabText: {
     color: '#000',
@@ -270,7 +318,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   button: {
-    marginTop: 16,
     backgroundColor: '#F9A825',
     paddingVertical: 14,
     borderRadius: 8,
@@ -278,7 +325,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight: 'bold',
-    color: '#000',
     fontSize: 16,
   },
   placeholderText: {

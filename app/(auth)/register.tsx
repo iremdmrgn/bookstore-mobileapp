@@ -5,19 +5,20 @@ import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity
 import { registerUser } from '../../firebase/auth';
 
 export default function RegisterScreen() {
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleRegister = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Email and password are required.');
+    if (!fullName.trim() || !email.trim() || !password) {
+      Alert.alert('Error', 'Full name, email and password are required.');
       return;
     }
     setLoading(true);
     try {
-      await registerUser(email.trim(), password);
+      await registerUser(email.trim(), password, fullName.trim());
       Alert.alert('Success', 'Account created successfully!');
       router.replace({ pathname: '/login' }); // kayıt sonrası login sayfasına yönlendir
     } catch (error: any) {
@@ -30,6 +31,14 @@ export default function RegisterScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Full Name"
+        value={fullName}
+        onChangeText={setFullName}
+        autoCapitalize="words"
+      />
 
       <TextInput
         style={styles.input}

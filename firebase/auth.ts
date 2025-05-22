@@ -1,9 +1,24 @@
 // firebase/auth.ts
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile
+} from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 
-export const registerUser = (email: string, password: string) => {
-  return createUserWithEmailAndPassword(auth, email, password);
+// registerUser fonksiyonuna fullname parametresi eklendi
+export const registerUser = async (email: string, password: string, fullName: string) => {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+  if (auth.currentUser) {
+    // Kullanıcının displayName bilgisini güncelle
+    await updateProfile(auth.currentUser, {
+      displayName: fullName,
+    });
+  }
+
+  return userCredential;
 };
 
 export const loginUser = (email: string, password: string) => {
