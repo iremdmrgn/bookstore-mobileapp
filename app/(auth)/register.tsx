@@ -1,15 +1,14 @@
+// app/(auth)/register.tsx
 import { useRouter } from 'expo-router';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { registerUser } from '../../firebase/auth';
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
   const router = useRouter();
-  const auth = getAuth();
 
   const handleRegister = async () => {
     if (!email || !password) {
@@ -18,9 +17,9 @@ export default function RegisterScreen() {
     }
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email.trim(), password);
+      await registerUser(email.trim(), password);
       Alert.alert('Success', 'Account created successfully!');
-      router.replace({ pathname: '/login' });  // kayıt sonrası login sayfasına yönlendir
+      router.replace({ pathname: '/login' }); // kayıt sonrası login sayfasına yönlendir
     } catch (error: any) {
       Alert.alert('Registration Error', error.message);
     } finally {
@@ -61,42 +60,10 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    marginBottom: 24,
-    textAlign: 'center',
-  },
-  input: {
-    height: 48,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    height: 48,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  loginText: {
-    color: '#007AFF',
-    textAlign: 'center',
-    marginTop: 8,
-  },
+  container: { flex: 1, justifyContent: 'center', paddingHorizontal: 24, backgroundColor: '#fff' },
+  title: { fontSize: 28, fontWeight: '700', marginBottom: 24, textAlign: 'center' },
+  input: { height: 48, borderWidth: 1, borderColor: '#ccc', borderRadius: 6, paddingHorizontal: 12, marginBottom: 16 },
+  button: { backgroundColor: '#007AFF', height: 48, borderRadius: 6, justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
+  buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  loginText: { color: '#007AFF', textAlign: 'center', marginTop: 8 },
 });

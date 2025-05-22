@@ -1,7 +1,8 @@
+// app/(auth)/login.tsx
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
-import { loginUser } from '../../firebase/auth'; // firebase auth fonksiyonları dosyan
+import { loginUser } from '../../firebase/auth';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -48,16 +49,8 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, justifyContent: 'center', padding: 20,
-  },
-  title: {
-    fontSize: 28, fontWeight: 'bold', marginBottom: 20, textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 15, borderRadius: 5,
-  },
-  link: {
-    color: 'blue', marginTop: 15, textAlign: 'center',
-  },
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
+  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 15, borderRadius: 5 },
+  link: { color: 'blue', marginTop: 15, textAlign: 'center' },
 });
